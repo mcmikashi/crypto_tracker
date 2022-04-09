@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom_boostrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cryptotracker.css') }}">
+    <title>Crypto Tracker</title>
+</head>
+<body class="bg-black text-light">
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{category}} alert-dismissible fade show text-center" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %} 
+          {% endif %}
+        {% endwith %}
+        {% block content %}
+    
+        {% endblock content %}
+    </div>
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script type="text/javascript">
+  var alertNode = document.querySelector('.alert')
+  var bsAlert = new bootstrap.Alert(alertNode)
+  setTimeout(function () {
+    bsAlert.close();
+  }, 5000);
+</script>
+</body>
+</html>

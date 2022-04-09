@@ -1,0 +1,58 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB:  ${{ secrets.TEST_DB }}   
+          POSTGRES_USER: ${{ secrets.USER_DB }}  
+          POSTGRES_PASSWORD: ${{ secrets.PASSWORD_DB }}  
+
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.9"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings.
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=79 --statistics
+    - name: Create Config File
+      run: |
+        cp .env_exemple .env
+        sed 's/db_test_uri/postgresql+psycopg2:\/\/testeur:testeur@localhost:5432\/testcrypto/g' .env
+        sed 's/api_key/${{ secrets.API_KEY }}/g' .env 
+    - name: Test and coverage
+      run: |
+        #coverage run -m unittest discover tests
+        #coverage report

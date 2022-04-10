@@ -21,6 +21,9 @@
                     name="submit_form"
                     value="{% if button_label %} {{button_label}} {% else %} Envoyer {% endif %}" 
                     class="btn btn-light">
+                {% if back_link %}
+                    <a href="{{url_for('cryptocurrency.manage')}}" class="btn btn-light">Retour</a>
+                {% endif %}
             </div>
         </form>
     </div>

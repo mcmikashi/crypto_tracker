@@ -1,5 +1,5 @@
 from . import cryptocurrency_blueprint as crypto
-from flask import render_template, request, flash
+from flask import render_template, request, flash, url_for, redirect
 from .utils import (
     get_user_current_total_valorization,
 )
@@ -88,9 +88,40 @@ def quick_add():
     )
 
 
-@crypto.route("/edit/")
-def edit():
-    pass
+@crypto.route("/edit/<int:pk>", methods=["GET", "POST"])
+@login_required
+def edit(pk):
+    purchase = Purchase.query.get_or_404(pk)
+    # if the current user is not the purchase user
+    # redirect to the manage page
+    if purchase.user_id != current_user.id:
+        return redirect(url_for("cryptocurrency.manage"))
+    if request.method == "POST":
+        form = PurchaseForm(request.form)
+        purchase.cryptocurrency_id = form.cryptocurrency.data
+        purchase.quantity = form.quantity.data
+        purchase.price = form.price.data
+        db.session.commit()
+        flash(
+            "Votre achats a bien été mise à jour.",
+            "success",
+        )
+    else:
+        form = PurchaseForm()
+        form.cryptocurrency.choices = [
+            (item.id, f"{item.symbol} ({item.name})")
+            for item in Cryptocurrency.query.all()
+        ]
+        form.cryptocurrency.data = purchase.cryptocurrency.id
+        form.price.data = purchase.price
+        form.quantity.data = purchase.quantity
+    return render_template(
+        "cryptocurrency/add_edit.html",
+        form=form,
+        purchase=purchase,
+        edit=True,
+        back_link=True,
+    )
 
 @crypto.route("/delete/")
 def delete():

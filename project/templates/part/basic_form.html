@@ -1,0 +1,20 @@
+{% from "part/_formhelpers.html" import render_field %}
+<div class="row my-4">
+    <div class="col-sm-12">
+        <form method=post>
+            <dl>
+                {% for field in form %}
+                    <div class="my-4">
+                        {{ render_field(field,class_="form-control bg-black text-white") }}
+                    </div>
+                {% endfor %}
+            </dl>
+            <div class="d-grid col-8 mx-auto gap-2">
+                <input type="submit" 
+                    name="submit_form"
+                    value="{% if button_label %} {{button_label}} {% else %} Envoyer {% endif %}" 
+                    class="btn btn-light">
+            </div>
+        </form>
+    </div>
+</div>

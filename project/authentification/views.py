@@ -1,13 +1,31 @@
 from . import authentification_blueprint as authentification
 from flask import render_template, request, redirect, url_for, flash
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from project import db
 from .models import User
-from .forms import SignupForm
+from .forms import SignupForm, LoginForm
+from flask_login import login_user, current_user
+
 
 @authentification.route("/login", methods=["GET", "POST"])
 def login():
-    pass
+    form = LoginForm(request.form)
+    email = request.form.get("email")
+    password = request.form.get("password")
+    remember = request.form.get("remember")
+    if current_user.is_authenticated:
+        return redirect(url_for("cryptocurrency.home"))
+    if request.method == "POST" and form.validate():
+        user = User.query.filter_by(email=email).first()
+        if not user or not check_password_hash(user.password, password):
+            flash("Identifiant ou mot de passe incorrect.","danger")
+            return redirect(url_for("authentification.login"))
+        else:
+            login_user(user, remember=remember)
+            return redirect(url_for("cryptocurrency.home"))
+    return render_template(
+        "authentification/login.html", form=form, current_page="login"
+    )
 
 
 @authentification.route("/signup", methods=["GET", "POST"])

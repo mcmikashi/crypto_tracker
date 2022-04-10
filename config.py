@@ -8,7 +8,6 @@ load_dotenv(path.join(basedir, ".env"))
 
 class Config:
     """Base config."""
-
     FLASK_ENV = "development"
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -24,3 +23,6 @@ class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = environ.get("TEST_DATABASE_URI")
     TESTING = True
     LOGIN_DISABLED = False
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
+    # Disable CSRF tokens in the Forms (only valid for testing purposes!)
+    WTF_CSRF_ENABLED = False

@@ -1,0 +1,20 @@
+{% from "part/_formhelpers.html" import render_field %}
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-10 mx-auto">
+        {% if edit %}
+            <h3 class="text-center">Modification de l'achats suivant :</h3>
+            <div class="text-center">
+                <p>Cryptomonaie : {{purchase.cryptocurrency.symbol}} <span class="small">({{purchase.cryptocurrency.name}})</span> </p>
+                <p>Prix : {{purchase.price}} €</p>
+                <p>Quantité :{{purchase.quantity}}</p>
+                <p>le {{purchase.date.strftime('%d/%m/%Y à %H:%M')}}</p>
+            </div>
+        {% endif %}
+        {% include 'part/basic_form.html' %}
+    </div>
+</div>
+{% endblock content %}

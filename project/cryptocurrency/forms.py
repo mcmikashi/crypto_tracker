@@ -3,6 +3,7 @@ from wtforms import (
     SelectField,
     DecimalField,
     validators,
+    HiddenField
 )
 
 
@@ -30,3 +31,7 @@ class QuickPurchaseForm(Form):
         [validators.DataRequired()],
         render_kw={"placeholder": "Quantité"},
     )
+
+
+class DeletePurchaseForm(Form):
+    id_purchase = HiddenField()

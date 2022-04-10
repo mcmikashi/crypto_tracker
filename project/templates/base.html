@@ -12,11 +12,19 @@
 <body class="bg-black text-light">
     <div class="container">
       <h1 class="text-center">
-        <a href="#" class="brand-icon link-light text-decoration-none">Crypto Tracker</a>
+        <a href="{{url_for('cryptocurrency.home')}}" class="brand-icon link-light text-decoration-none">Crypto Tracker</a>
       </h1>
       <nav class="nav justify-content-center fs-5 my-2 custom-nav">
-        <a class="nav-link {% if current_page == 'signup' %}active{% endif %}" href="{{url_for('authentification.signup')}}"><i class="fa-solid fa-user-plus"></i></a>
-        <a class="nav-link {% if current_page == 'login' %}active{% endif %}" href="{{url_for('authentification.login')}}"><i class="fa-solid fa-arrow-right-to-bracket"></i></a>
+        {% if current_user.is_authenticated %}
+            <a class="nav-link {% if current_page == 'graphique' %}active{% endif %}" href="{{url_for('cryptocurrency.chart')}}"><i class="fa-solid fa-chart-line"></i></a>
+            <a class="nav-link {% if current_page == 'add' %}active{% endif %}" href="{{url_for('cryptocurrency.add')}}"><i class="fa-solid fa-circle-plus"></i></a>
+            <a class="nav-link {% if current_page == 'quick_add' %}active{% endif %}" href="{{url_for('cryptocurrency.quick_add')}}"><i class="fa-solid fa-plus"></i></a>
+            <a class="nav-link {% if current_page == 'admin' %}active{% endif %}" href="{{url_for('cryptocurrency.manage')}}"><i class="fa-solid fa-pen-to-square"></i></a>
+            <a class="nav-link" href="{{url_for('authentification.logout')}}"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+        {% else %}
+            <a class="nav-link {% if current_page == 'signup' %}active{% endif %}" href="{{url_for('authentification.signup')}}"><i class="fa-solid fa-user-plus"></i></a>
+            <a class="nav-link {% if current_page == 'login' %}active{% endif %}" href="{{url_for('authentification.login')}}"><i class="fa-solid fa-arrow-right-to-bracket"></i></a>
+        {% endif %}
       </nav>
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}

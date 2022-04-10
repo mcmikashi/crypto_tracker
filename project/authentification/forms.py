@@ -4,6 +4,7 @@ from wtforms import (
     EmailField,
     PasswordField,
     validators,
+    BooleanField,
 )
 
 
@@ -44,3 +45,18 @@ class SignupForm(Form):
         description="fa-solid fa-lock",
         render_kw={"placeholder": "Répeter le Mot de passe"},
     )
+
+class LoginForm(Form):
+    email = EmailField(
+        "E-mail",
+        [validators.DataRequired(), validators.Email()],
+        description="fa-solid fa-at",
+        render_kw={"placeholder": "E-mail"},
+    )
+    password = PasswordField(
+        "Mot de passe",
+        [validators.DataRequired(), validators.Length(1, 150)],
+        description="fa-solid fa-lock",
+        render_kw={"placeholder": "Mot de passe"},
+    )
+    remember = BooleanField("Se souvenir de moi")

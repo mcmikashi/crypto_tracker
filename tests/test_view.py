@@ -84,8 +84,15 @@ class TestAuthentification(TestCase, unittest.TestCase):
         self.logged_user()
         response_1 = self.client.get(url)
         self.assertEqual(response_1.status_code, 302)
+    
+    def test_login_post(self):
+        response = self.client.post(
+            url_for("authentification.login"),
+            data={"email": "bobdupont@test.com", "password": "bobdu1234"},
+        )
+        self.assertRedirects(response, url_for("cryptocurrency.home"))
 
-    def test_login_bad_password(self):
+    def test_login_post_bad_password(self):
         response = self.client.post(
             url_for("authentification.login"),
             data={"email": "bobdupont@test.com", "password": "bad-password"},

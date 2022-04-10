@@ -8,6 +8,7 @@ load_dotenv(path.join(basedir, ".env"))
 
 class Config:
     """Base config."""
+
     FLASK_ENV = "development"
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from project import db
 from .models import User
 from .forms import SignupForm, LoginForm
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user,login_required ,logout_user
 
 
 @authentification.route("/login", methods=["GET", "POST"])
@@ -61,5 +61,8 @@ def signup():
 
 
 @authentification.route("/logout")
+@login_required
 def logout():
-    pass
+    logout_user()
+    flash("A bientot","success")
+    return redirect(url_for("authentification.login"))

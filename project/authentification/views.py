@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from project import db
 from .models import User
 from .forms import SignupForm, LoginForm
-from flask_login import login_user, current_user,login_required ,logout_user
+from flask_login import login_user, current_user, login_required, logout_user
 
 
 @authentification.route("/login", methods=["GET", "POST"])
@@ -18,7 +18,7 @@ def login():
     if request.method == "POST" and form.validate():
         user = User.query.filter_by(email=email).first()
         if not user or not check_password_hash(user.password, password):
-            flash("Identifiant ou mot de passe incorrect.","danger")
+            flash("Identifiant ou mot de passe incorrect.", "danger")
             return redirect(url_for("authentification.login"))
         else:
             login_user(user, remember=remember)
@@ -37,13 +37,14 @@ def signup():
         email = form.email.data
         password = form.password.data
         user = User.query.filter_by(email=email).first()
-        # if a user is found, we want to redirect back 
+        # if a user is found, we want to redirect back
         # to the login page so user can login.
-        if user : 
-            flash("Un compte a déjà été créé avec cette adresse mail.",
-                  "warning")
+        if user:
+            flash(
+                "Un compte a déjà été créé avec cette adresse mail.", "warning"
+            )
             return redirect(url_for("authentification.login"))
-        # create a new user with the form data. 
+        # create a new user with the form data.
         # Hash the password so the plaintext version isn't saved.
         new_user = User(
             first_name=first_name,
@@ -53,7 +54,7 @@ def signup():
         )
         db.session.add(new_user)
         db.session.commit()
-        flash("Votre compte a bien été enregistré.","success")
+        flash("Votre compte a bien été enregistré.", "success")
         return redirect(url_for("authentification.login"))
     return render_template(
         "authentification/signup.html", form=form, current_page="signup"
@@ -64,5 +65,5 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    flash("A bientot","success")
+    flash("A bientot", "success")
     return redirect(url_for("authentification.login"))

@@ -16,5 +16,6 @@ class TestAuthentification(unittest.TestCase):
         self.assertEqual(new_user.password, "bobdupont1234")
         self.assertEqual(new_user.__repr__(), f"<User: Bob Dupont>")
 
+
 if __name__ == "__main__":
     unittest.main()

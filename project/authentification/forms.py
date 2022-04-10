@@ -46,6 +46,7 @@ class SignupForm(Form):
         render_kw={"placeholder": "Répeter le Mot de passe"},
     )
 
+
 class LoginForm(Form):
     email = EmailField(
         "E-mail",

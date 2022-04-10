@@ -4,7 +4,7 @@ from .utils import (
     get_user_current_total_valorization,
 )
 from flask_login import login_required, current_user
-from .forms import PurchaseForm,QuickPurchaseForm
+from .forms import PurchaseForm,QuickPurchaseForm,DeletePurchaseForm
 from project import db
 from .models import Cryptocurrency,Purchase,QuoteCurrency
 from sqlalchemy.sql import desc
@@ -123,9 +123,32 @@ def edit(pk):
         back_link=True,
     )
 
-@crypto.route("/delete/")
-def delete():
-    pass
+@crypto.route("/delete/<int:pk>", methods=["GET", "POST"])
+@login_required
+def delete(pk):
+    purchase = Purchase.query.get_or_404(pk)
+    # if the current user is not the purchase user
+    # redirect to the manage page
+    if purchase.user_id != current_user.id:
+        return redirect(url_for("cryptocurrency.manage"))
+    form = DeletePurchaseForm(request.form)
+    form.id_purchase.data = purchase.id
+    if request.method == "POST" and form.validate():
+        # if the id of the purchase is not the same
+        # as the id purchase of the form we redirect
+        # to the manage page this SHOULD NEVER HAPPEN
+        if purchase.id == form.id_purchase.data:
+            db.session.delete(purchase)
+            db.session.commit()
+            flash(
+                "Votre achats a bien été suprimmé.",
+                "success",
+            )
+            return redirect(url_for("cryptocurrency.manage"))
+    return render_template(
+        "cryptocurrency/delete.html", form=form, purchase=purchase
+    )
+
 
 
 @crypto.route("/chart")

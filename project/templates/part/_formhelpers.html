@@ -1,0 +1,15 @@
+{% macro render_field(field) %}
+{% if field.errors %}
+  {% for error in field.errors %}
+    <p class="text-danger text-center small my-1">{{ error }}</p>
+  {% endfor %}
+{% endif %}
+{% if field.description %}
+  <div class="input-group">
+    <span class="input-group-text"><i class="{{field.description}}"></i></span>
+    {{ field(**kwargs)|safe }}
+  </div>
+{% else %}
+  {{ field(**kwargs)|safe }}
+{% endif %}
+{% endmacro %}

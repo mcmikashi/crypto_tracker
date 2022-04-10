@@ -1,9 +1,16 @@
 import unittest
 from flask_testing import TestCase
-from project import create_app, db
-from project.authentification.models import User
 from werkzeug.security import generate_password_hash
 from flask import url_for
+from project import create_app, db
+from project.authentification.models import User
+from project.cryptocurrency.models import (
+    Cryptocurrency,
+    Profit,
+    Purchase,
+    QuoteCurrency,
+)
+from datetime import datetime, date, timezone, timedelta
 
 
 class TestAuthentification(TestCase, unittest.TestCase):
@@ -93,10 +100,12 @@ class TestAuthentification(TestCase, unittest.TestCase):
     def test_login_post(self):
         response = self.client.post(
             url_for("authentification.login"),
+            follow_redirects=True,
             data={"email": "bobdupont@test.com", "password": "bobdu1234"},
         )
-        self.assertRedirects(response, url_for("cryptocurrency.home"))
-
+        self.assertEqual(response.request.path,
+                         url_for("cryptocurrency.home"))
+        
     def test_login_post_bad_password(self):
         response = self.client.post(
             url_for("authentification.login"),
@@ -118,3 +127,191 @@ class TestAuthentification(TestCase, unittest.TestCase):
         response_1 = self.client.get(url)
         self.assertEqual(response_1.status_code, 302)
         self.assert_message_flashed("A bientot", "success")
+
+class TestCryptocurrency(TestCase, unittest.TestCase):
+
+    def create_app(self):
+        app = create_app("config.TestConfig")
+        return app
+    
+    def setUp(self):
+        db.create_all()
+        self.new_user = User(
+            first_name="Bob",
+            last_name="Dupont",
+            email="bobdupont@test.com",
+            password=generate_password_hash("bobdu1234"),
+        )
+        db.session.add(self.new_user)
+        self.new_cryptocurrency = Cryptocurrency(
+            name="Bitcon", symbol="BTC", coinmarketcap_id=1,
+            coinmarketcap_icon="https://example.com/icon/1"
+        )
+        db.session.add(self.new_cryptocurrency)
+        db.session.commit()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def auth_user(self):
+        return self.client.post(
+            url_for("authentification.login"),
+            data=dict(email="bobdupont@test.com", password="bobdu1234"),
+        )
+    def set_purchse_and_quote(self):
+        self.new_quote_currency = QuoteCurrency(
+            cryptocurrency_id=self.new_cryptocurrency.id, price=110
+        )
+        db.session.add(self.new_quote_currency)
+        self.new_purchase = Purchase(
+            user_id=self.new_user.id,
+            cryptocurrency_id=self.new_cryptocurrency.id,
+            price=1000,
+            quantity=10,
+            date=datetime.now(timezone.utc),
+        )
+        db.session.add(self.new_purchase)
+        db.session.commit()
+
+    def set_profit(self):
+        self.profit = Profit(
+            user_id=self.new_user.id,
+            profit_and_loss=300,
+            date=date.today() - timedelta(1),
+        )
+        db.session.add(self.profit)
+        db.session.commit()
+
+    def test_home_status_code(self):
+        url = url_for("cryptocurrency.home")
+        response_0 = self.client.get(url)
+        self.assertEqual(response_0.status_code, 302)
+        # testing with a logged user
+        self.auth_user()
+        response_1 = self.client.get(url)
+        self.assert_200(response_1)
+
+    def test_add_status_code(self):
+        url = url_for("cryptocurrency.add")
+        response_0 = self.client.get(url)
+        self.assertEqual(response_0.status_code, 302)
+        # testing with a logged user
+        self.auth_user()
+        response_1 = self.client.get(url)
+        self.assert200(response_1)
+    
+    def test_post_on_add(self):
+        self.auth_user()
+        response = self.client.post(
+            url_for("cryptocurrency.add"),
+            data={
+                "cryptocurrency": 1,
+                "price": 100,
+                "quantity": 10,
+            },
+        )
+        self.assert_message_flashed(
+            "Votre achats a bien été ajouté.",
+            "success",
+        )
+        self.assert200(response)
+
+    def test_quick_add_status_code(self):
+        url = url_for("cryptocurrency.quick_add")
+        response_0 = self.client.get(url)
+        self.assertEqual(response_0.status_code, 302)
+        # testing with a logged user
+        self.auth_user()
+        response_1 = self.client.get(url)
+        self.assert200(response_1)
+    
+    def test_post_on_quick_add(self):
+        self.auth_user()
+        self.set_purchse_and_quote()
+        response = self.client.post(
+            url_for("cryptocurrency.quick_add"),
+            data={
+                "cryptocurrency": 1,
+                "quantity": 10,
+            },
+        )
+        self.assert_message_flashed(
+            "Votre achats a bien été ajouté.",
+            "success",
+        )
+        self.assert200(response)
+
+    def test_admin_status_code(self):
+        url = url_for("cryptocurrency.manage")
+        response_0 = self.client.get(url)
+        self.assertEqual(response_0.status_code, 302)
+        # testing with a logged user
+        self.auth_user()
+        response_1 = self.client.get(url)
+        self.assert200(response_1)
+        
+
+    def test_graphique_status_code(self):
+        url = url_for("cryptocurrency.chart")
+        response_0 = self.client.get(url)
+        self.assertEqual(response_0.status_code, 302)
+        # testing with a logged user
+        self.auth_user()
+        response_1 = self.client.get(url)
+        self.assert200(response_1)
+        # testing with a logged user with profit
+        self.set_purchse_and_quote()
+        self.set_profit()
+        response_1 = self.client.get(url)
+        self.assert200(response_1)
+
+    def test_edit_status_code(self):
+        self.set_purchse_and_quote()
+        url = url_for("cryptocurrency.edit", pk=1)
+        response_0 = self.client.get(url)
+        self.assertEqual(response_0.status_code, 302)
+        # testing with a logged user
+        self.auth_user()
+        response_1 = self.client.get(url)
+        self.assert200(response_1)
+    
+    def test_post_on_edit(self):
+        self.auth_user()
+        self.set_purchse_and_quote()
+        response = self.client.post(
+            url_for("cryptocurrency.edit", pk=1),
+            data={
+                "cryptocurrency": 1,
+                "price": 200,
+                "quantity": 5,
+            },
+        )
+        self.assert_message_flashed(
+            "Votre achats a bien été mise à jour.",
+            "success",
+        )
+        self.assert200(response)
+
+    def test_delete_status_code(self):
+        self.set_purchse_and_quote()
+        url = url_for("cryptocurrency.delete", pk=1)
+        response_0 = self.client.get(url)
+        self.assertEqual(response_0.status_code, 302)
+        # testing with a logged user
+        self.auth_user()
+        response_1 = self.client.get(url)
+        self.assert200(response_1)
+    
+    def test_post_on_delete(self):
+        self.auth_user()
+        self.set_purchse_and_quote()
+        response = self.client.post(
+            url_for("cryptocurrency.delete", pk=1),
+            follow_redirects=True)
+        self.assert_message_flashed(
+            "Votre achats a bien été suprimmé.",
+            "success",
+        )
+        self.assertEqual(response.request.path, 
+                         url_for("cryptocurrency.manage"))

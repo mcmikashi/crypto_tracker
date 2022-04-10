@@ -34,6 +34,11 @@ def register_blueprints(app):
     # Since the application instance is now created, register each Blueprint
     # with the Flask application instance (app)
     # blueprint for auth routes in our app
-    from project.authentification import authentification_blueprint
 
+    # Add authentification
+    from project.authentification import authentification_blueprint
     app.register_blueprint(authentification_blueprint)
+
+    # Add cryptocurrency
+    from project.cryptocurrency import cryptocurrency_blueprint
+    app.register_blueprint(cryptocurrency_blueprint)

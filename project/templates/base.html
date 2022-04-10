@@ -11,6 +11,13 @@
 </head>
 <body class="bg-black text-light">
     <div class="container">
+      <h1 class="text-center">
+        <a href="#" class="brand-icon link-light text-decoration-none">Crypto Tracker</a>
+      </h1>
+      <nav class="nav justify-content-center fs-5 my-2 custom-nav">
+        <a class="nav-link {% if current_page == 'signup' %}active{% endif %}" href="{{url_for('authentification.signup')}}"><i class="fa-solid fa-user-plus"></i></a>
+        <a class="nav-link {% if current_page == 'login' %}active{% endif %}" href="{{url_for('authentification.login')}}"><i class="fa-solid fa-arrow-right-to-bracket"></i></a>
+      </nav>
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
               {% for category, message in messages %}

@@ -25,13 +25,15 @@ def initialize_extensions(app):
 
     @login_manager.user_loader
     def load_user(user_id):
-        # since the user_id is just the primary key of our 
+        # since the user_id is just the primary key of our
         # user table, use it in the query for the user
         return User.query.get(int(user_id))
+
 
 def register_blueprints(app):
     # Since the application instance is now created, register each Blueprint
     # with the Flask application instance (app)
     # blueprint for auth routes in our app
     from project.authentification import authentification_blueprint
+
     app.register_blueprint(authentification_blueprint)

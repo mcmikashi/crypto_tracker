@@ -5,6 +5,7 @@ from project.authentification.models import User
 from werkzeug.security import generate_password_hash
 from flask import url_for
 
+
 class TestAuthentification(TestCase, unittest.TestCase):
     def create_app(self):
         app = create_app("config.TestConfig")
@@ -56,7 +57,9 @@ class TestAuthentification(TestCase, unittest.TestCase):
             "Votre compte a bien été enregistré.",
             "success",
         )
-        self.assertEqual(response.request.path, url_for("authentification.login"))
+        self.assertEqual(
+            response.request.path, url_for("authentification.login")
+        )
 
     def test_post_on_signup_email_already_on_database(self):
         response = self.client.post(
@@ -74,7 +77,9 @@ class TestAuthentification(TestCase, unittest.TestCase):
             "Un compte a déjà été créé avec cette adresse mail.",
             "warning",
         )
-        self.assertEqual(response.request.path, url_for("authentification.login"))
+        self.assertEqual(
+            response.request.path, url_for("authentification.login")
+        )
 
     def test_login_page_status_code(self):
         url = url_for("authentification.login")
@@ -84,7 +89,7 @@ class TestAuthentification(TestCase, unittest.TestCase):
         self.logged_user()
         response_1 = self.client.get(url)
         self.assertEqual(response_1.status_code, 302)
-    
+
     def test_login_post(self):
         response = self.client.post(
             url_for("authentification.login"),
@@ -98,9 +103,11 @@ class TestAuthentification(TestCase, unittest.TestCase):
             data={"email": "bobdupont@test.com", "password": "bad-password"},
         )
         self.assert_message_flashed(
-            "Identifiant ou mot de passe incorrect.","danger"
+            "Identifiant ou mot de passe incorrect.", "danger"
         )
-        self.assertEqual(response.request.path, url_for("authentification.login"))
+        self.assertEqual(
+            response.request.path, url_for("authentification.login")
+        )
 
     def test_logout_page_status_code(self):
         url = url_for("authentification.logout")

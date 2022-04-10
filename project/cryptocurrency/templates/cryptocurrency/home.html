@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-12 my-2">
+            <p class="text-center fs-5">
+                <a id="id_valorization" class="link-light text-decoration-none" href="{{url_for('cryptocurrency.chart')}}">{{total_valorization}} €</a>
+            </p>
+        </div>
+        <div class="col-10 mx-auto">
+            <ul class="list-group">
+                {% for cryptocurrency in cryptocurrencys %}
+                <li class="list-group-item bg-black text-white border-light">
+                    <img src="{{ cryptocurrency.icon }}" class="float-start mx-2 crypto-icon" alt="{{cryptocurrency.name}} icon">
+                    {{cryptocurrency.symbol}}<span class="small">({{cryptocurrency.name}})</span> 
+                    {% if cryptocurrency.valorization > 0 %}
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                    {% elif cryptocurrency.valorization < 0 %}
+                        <i class="fa-solid fa-arrow-trend-down"></i>
+                    {% else %}
+                        <i class="fa-solid fa-equals"></i>
+                    {% endif %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock content %}

@@ -19,3 +19,14 @@ class PurchaseForm(Form):
         [validators.DataRequired()],
         render_kw={"placeholder": "Quantité"},
     )
+
+class QuickPurchaseForm(Form):
+    cryptocurrency = SelectField(
+        "Crypto monaie",
+        coerce=int,
+    )
+    quantity = DecimalField(
+        "Quantité",
+        [validators.DataRequired()],
+        render_kw={"placeholder": "Quantité"},
+    )

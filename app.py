@@ -1,6 +1,6 @@
 from project import create_app
 
-app = create_app("config.DevConfig")
+app = create_app("config.Prodconfig")
 
 # Call the application factory function to construct a Flask application
 # instance using the development configuration

@@ -12,6 +12,7 @@ class Config:
     FLASK_ENV = "development"
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SCHEDULER_TIMEZONE = "Europe/Paris"
 
 
 class DevConfig(Config):

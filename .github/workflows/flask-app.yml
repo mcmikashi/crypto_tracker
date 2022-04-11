@@ -54,5 +54,5 @@ jobs:
         sed -i 's/api_key/${{ secrets.API_KEY }}/g' .env 
     - name: Test and coverage
       run: |
-        #coverage run -m unittest discover tests
-        #coverage report
+        coverage run -m unittest discover tests
+        coverage report

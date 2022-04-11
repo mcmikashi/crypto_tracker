@@ -1,11 +1,15 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_apscheduler import APScheduler
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
+# init the LoginManager instance
 login_manager = LoginManager()
 login_manager.login_view = "authentification.login"
+# init APScheduler instance
+scheduler = APScheduler()
 
 
 def create_app(config_object=None):
@@ -19,7 +23,31 @@ def create_app(config_object=None):
 def initialize_extensions(app):
     # Since the application instance is now created, pass it to each Flask
     # extension instance to bind it to the Flask application instance (app)
+    # initialize the database with the app
     db.init_app(app)
+    # initialize APScheduler with the app
+    scheduler.init_app(app)
+    from project.cryptocurrency.utils import \
+        update_quote, daily_update_user_last_valorization
+
+    # Every 5 minutes get the last quote currency of
+    # all cryptorency that is on the database
+    @scheduler.task("interval", id="update_last_quote", minutes=5)
+    def update_last_quote():
+        with app.app_context():
+            update_quote()
+
+    # Every day at 00:01  we get the last yesterday
+    # profit of all user and store it to the database
+    @scheduler.task("cron", id="add_all_user_profit", hour=0, minute=1)
+    def update_all_user_valorisation():
+        with app.app_context():
+            daily_update_user_last_valorization()
+
+    if app.config["FLASK_ENV"] != "development":
+        scheduler.start()
+
+    # initialize Login Manager with the app
     login_manager.init_app(app)
     from .authentification.models import User
 

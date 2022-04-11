@@ -26,12 +26,16 @@ class TestStatusCode(LiveServerTestCase, unittest.TestCase):
             password=generate_password_hash("bobdupont1234"),
         )
         self.cryptocurrency_1 = Cryptocurrency(
-            name="Coin", symbol="C", coinmarketcap_id=1,
-            coinmarketcap_icon="https://example.com/icon/1"
+            name="Coin",
+            symbol="C",
+            coinmarketcap_id=1,
+            coinmarketcap_icon="https://example.com/icon/1",
         )
         self.cryptocurrency_2 = Cryptocurrency(
-            name="Coin1", symbol="C1", coinmarketcap_id=2,
-            coinmarketcap_icon="https://example.com/icon/2"
+            name="Coin1",
+            symbol="C1",
+            coinmarketcap_id=2,
+            coinmarketcap_icon="https://example.com/icon/2",
         )
         data_list = [
             self.new_user,
@@ -74,8 +78,7 @@ class TestStatusCode(LiveServerTestCase, unittest.TestCase):
         # the index page will redirect us to the login page
         self.browser.get(self.get_server_url())
         self.assertEqual(
-            self.browser.current_url,
-            f"{self.get_server_url()}/login?next=%2F"
+            self.browser.current_url, f"{self.get_server_url()}/login?next=%2F"
         )
         # go to the sign up page
         self.browser.find_element(By.LINK_TEXT, "Créer un compte").click()

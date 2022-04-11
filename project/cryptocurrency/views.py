@@ -2,25 +2,28 @@ from . import cryptocurrency_blueprint as crypto
 from flask import render_template, request, flash, url_for, redirect
 from .utils import get_user_current_total_valorization
 from flask_login import login_required, current_user
-from .forms import PurchaseForm,QuickPurchaseForm,DeletePurchaseForm
+from .forms import PurchaseForm, QuickPurchaseForm, DeletePurchaseForm
 from project import db
-from .models import Cryptocurrency,Purchase,QuoteCurrency,Profit
+from .models import Cryptocurrency, Purchase, QuoteCurrency, Profit
 from sqlalchemy.sql import desc
 import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 @crypto.route("/")
 @login_required
 def home():
-    cryptocurrencys,total_valorization = \
-        get_user_current_total_valorization(current_user.id)
+    cryptocurrencys, total_valorization = get_user_current_total_valorization(
+        current_user.id
+    )
     return render_template(
         "cryptocurrency/home.html",
         cryptocurrencys=cryptocurrencys,
         total_valorization=f"{total_valorization:+}",
     )
+
 
 @crypto.route("/manage")
 @login_required
@@ -59,6 +62,7 @@ def add():
         quick=True,
         current_page="add",
     )
+
 
 @crypto.route("/quick-add", methods=["GET", "POST"])
 @login_required
@@ -125,6 +129,7 @@ def edit(pk):
         back_link=True,
     )
 
+
 @crypto.route("/delete/<int:pk>", methods=["GET", "POST"])
 @login_required
 def delete(pk):
@@ -152,8 +157,6 @@ def delete(pk):
     )
 
 
-
-
 @crypto.route("/chart")
 @login_required
 def chart():
@@ -169,7 +172,7 @@ def chart():
         new_key = 1
     else:
         new_key = max(profit_dict.keys()) + 1
-    profit_dict[new_key] =  get_user_current_total_valorization(
+    profit_dict[new_key] = get_user_current_total_valorization(
         current_user.id, True
     )
     # color

@@ -18,19 +18,19 @@ basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, ".env"))
 
 
-def get_user_current_total_valorization(user_id:int, only_total=False):
-    """ This function get an user and return is current total valorization
+def get_user_current_total_valorization(user_id: int, only_total=False):
+    """This function get an user and return is current total valorization
         and  if the only_total is false the valoziration for each purchase.
     Args:
         user_id (int): the user id that we want
-        only_total (bool, optional): 
+        only_total (bool, optional):
             flag for check if we only want the total of the
             current valorization. Defaults to False.
 
     Returns:
         only_total == False : a tuple that containt a list of dic and an int
         only_total == True : return an int
-           """
+    """
     get_lastest_quote = (
         select(QuoteCurrency.price)
         .filter(QuoteCurrency.cryptocurrency_id == Cryptocurrency.id)
@@ -60,8 +60,8 @@ def get_user_current_total_valorization(user_id:int, only_total=False):
     )
 
 
-def get_user_total_valorization_of_the_day(user_id:int)->tuple:
-    """ This function get an user id and return the valorization
+def get_user_total_valorization_of_the_day(user_id: int) -> tuple:
+    """This function get an user id and return the valorization
         the last valorization of yesterday.
     Args:
         user_id (int): the user id that we want
@@ -102,8 +102,8 @@ def get_user_total_valorization_of_the_day(user_id:int)->tuple:
 
 
 def add_cryptocurrency():
-    """ This function fetch coinmarketcap api data and add a list of
-        cryptocurrency in the database
+    """This function fetch coinmarketcap api data and add a list of
+    cryptocurrency in the database
     """
     url = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info"
     parameters = {
@@ -126,7 +126,7 @@ def add_cryptocurrency():
                 name=item["name"],
                 symbol=item["symbol"],
                 coinmarketcap_id=item["id"],
-                coinmarketcap_icon=item["logo"]
+                coinmarketcap_icon=item["logo"],
             )
             db.session.add(new_crypto)
             db.session.commit()
@@ -137,8 +137,8 @@ def add_cryptocurrency():
 
 
 def update_quote():
-    """ This function fetch coinmarketcap api data and add the last
-        quote currency of each cryptocurrency in the database
+    """This function fetch coinmarketcap api data and add the last
+    quote currency of each cryptocurrency in the database
     """
     url = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest"
     cryptocurrencys = Cryptocurrency.query.all()
@@ -176,10 +176,10 @@ def update_quote():
 
 
 def daily_update_user_last_valorization():
-    """This function get the list of all user and call 
-       the function get_user_total_valorization_of_the_day for
-       each of them to store the last valorization of yesterday
-       for each of them.
+    """This function get the list of all user and call
+    the function get_user_total_valorization_of_the_day for
+    each of them to store the last valorization of yesterday
+    for each of them.
     """
     user_id_list = [id for id, in db.session.query(User.id).all()]
     for user_id in user_id_list:

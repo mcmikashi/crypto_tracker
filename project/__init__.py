@@ -37,8 +37,10 @@ def register_blueprints(app):
 
     # Add authentification
     from project.authentification import authentification_blueprint
+
     app.register_blueprint(authentification_blueprint)
 
     # Add cryptocurrency
     from project.cryptocurrency import cryptocurrency_blueprint
+
     app.register_blueprint(cryptocurrency_blueprint)

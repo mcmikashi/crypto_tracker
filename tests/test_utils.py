@@ -50,8 +50,10 @@ class TestUtilsFunction(TestCase, unittest.TestCase):
         db.session.add(self.new_user)
         db.session.add(self.new_user_1)
         self.new_cryptocurrency = Cryptocurrency(
-            name="Bitcon", symbol="BTC", coinmarketcap_id=4,
-            coinmarketcap_icon="https://example.com/icon/4"
+            name="Bitcon",
+            symbol="BTC",
+            coinmarketcap_id=4,
+            coinmarketcap_icon="https://example.com/icon/4",
         )
         db.session.add(self.new_cryptocurrency)
         db.session.commit()
@@ -106,8 +108,9 @@ class TestUtilsFunction(TestCase, unittest.TestCase):
         self.assertEqual(totale, 100)
         self.assertEqual(item_list[0].name, self.new_cryptocurrency.name)
         self.assertEqual(item_list[0].symbol, self.new_cryptocurrency.symbol)
-        self.assertEqual(item_list[0].icon,
-                          self.new_cryptocurrency.coinmarketcap_icon)
+        self.assertEqual(
+            item_list[0].icon, self.new_cryptocurrency.coinmarketcap_icon
+        )
         self.assertEqual(item_list[0].valorization, 100)
 
     def test_yesterday_last_valorisation(self):

@@ -1,10 +1,4 @@
-from wtforms import (
-    Form,
-    SelectField,
-    DecimalField,
-    validators,
-    HiddenField
-)
+from wtforms import Form, SelectField, DecimalField, validators, HiddenField
 
 
 class PurchaseForm(Form):
@@ -20,6 +14,7 @@ class PurchaseForm(Form):
         [validators.DataRequired()],
         render_kw={"placeholder": "Quantité"},
     )
+
 
 class QuickPurchaseForm(Form):
     cryptocurrency = SelectField(

@@ -8,6 +8,7 @@ from project.cryptocurrency.models import (
 )
 from datetime import datetime, timezone
 
+
 class TestAuthentification(unittest.TestCase):
     def test_new_user(self):
         new_user = User(
@@ -20,27 +21,33 @@ class TestAuthentification(unittest.TestCase):
         self.assertEqual(new_user.last_name, "Dupont")
         self.assertEqual(new_user.email, "bob.dupont@test.com")
         self.assertEqual(new_user.password, "bobdupont1234")
-        self.assertEqual(new_user.__repr__(), f"<User: Bob Dupont>")
+        self.assertEqual(new_user.__repr__(), "<User: Bob Dupont>")
+
 
 class TestCrypto(unittest.TestCase):
     def test_new_cryptocurrency(self):
         new_cryptocurrency = Cryptocurrency(
-            name="Bitcon", symbol="BTC", coinmarketcap_id=4,
-            coinmarketcap_icon="https://example.com/icon/4"
+            name="Bitcon",
+            symbol="BTC",
+            coinmarketcap_id=4,
+            coinmarketcap_icon="https://example.com/icon/4",
         )
         self.assertEqual(new_cryptocurrency.name, "Bitcon")
         self.assertEqual(new_cryptocurrency.symbol, "BTC")
         self.assertEqual(new_cryptocurrency.coinmarketcap_id, 4)
-        self.assertEqual(new_cryptocurrency.coinmarketcap_icon,
-                         "https://example.com/icon/4")
         self.assertEqual(
-            new_cryptocurrency.__repr__(), f"<Cryptocurrency Bitcon>"
+            new_cryptocurrency.coinmarketcap_icon, "https://example.com/icon/4"
+        )
+        self.assertEqual(
+            new_cryptocurrency.__repr__(), "<Cryptocurrency Bitcon>"
         )
 
     def test_new_quote_currency(self):
         new_cryptocurrency = Cryptocurrency(
-            name="Bitcon", symbol="BTC", coinmarketcap_id=4,
-            coinmarketcap_icon="https://example.com/icon/4"
+            name="Bitcon",
+            symbol="BTC",
+            coinmarketcap_id=4,
+            coinmarketcap_icon="https://example.com/icon/4",
         )
         new_date = datetime.now(timezone.utc)
         new_quote_currency = QuoteCurrency(
@@ -64,8 +71,10 @@ class TestCrypto(unittest.TestCase):
             password="bobdupont1234",
         )
         new_cryptocurrency = Cryptocurrency(
-            name="Bitcon", symbol="BTC", coinmarketcap_id=4,
-            coinmarketcap_icon="https://example.com/icon/4"
+            name="Bitcon",
+            symbol="BTC",
+            coinmarketcap_id=4,
+            coinmarketcap_icon="https://example.com/icon/4",
         )
         new_date = datetime.now(timezone.utc)
         new_purchase = Purchase(
@@ -103,6 +112,7 @@ class TestCrypto(unittest.TestCase):
         self.assertEqual(
             new_profit.__repr__(), f"<Profit : <U:Bob Dupont> <D:{new_date}> >"
         )
+
 
 if __name__ == "__main__":
     unittest.main()

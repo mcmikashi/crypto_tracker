@@ -1,13 +1,15 @@
 from . import cryptocurrency_blueprint as crypto
 from flask import render_template, request, flash, url_for, redirect
-from .utils import (
-    get_user_current_total_valorization,
-)
+from .utils import get_user_current_total_valorization
 from flask_login import login_required, current_user
 from .forms import PurchaseForm,QuickPurchaseForm,DeletePurchaseForm
 from project import db
-from .models import Cryptocurrency,Purchase,QuoteCurrency
+from .models import Cryptocurrency,Purchase,QuoteCurrency,Profit
 from sqlalchemy.sql import desc
+import base64
+from io import BytesIO
+import matplotlib.pyplot as plt
+import numpy as np
 
 @crypto.route("/")
 @login_required
@@ -151,6 +153,48 @@ def delete(pk):
 
 
 
+
 @crypto.route("/chart")
+@login_required
 def chart():
-    pass
+    profit_dict = {0: 0}
+    for index, item in enumerate(
+        Profit.query.filter(Profit.user_id == current_user.id).order_by(
+            Profit.date
+        )
+    ):
+        num = index + 1
+        profit_dict.update({num: item.profit_and_loss})
+    if profit_dict == {0: 0}:
+        new_key = 1
+    else:
+        new_key = max(profit_dict.keys()) + 1
+    profit_dict[new_key] =  get_user_current_total_valorization(
+        current_user.id, True
+    )
+    # color
+    primary_black = "#100f0f0f"
+    primary_grey = "#efefef"
+    primary_green = "#1fc36c"
+    # Data for plotting
+    fig, ax = plt.subplots(facecolor=primary_black)
+    ax.plot(profit_dict.keys(), profit_dict.values(), color=primary_green)
+    ax.set(
+        xlabel="Jour(s)", ylabel="Gain ou Perte (€)", facecolor=primary_black
+    )
+    ax.spines["bottom"].set_color(primary_grey)
+    ax.spines["left"].set_color(primary_grey)
+    ax.yaxis.label.set_color(primary_grey)
+    ax.xaxis.label.set_color(primary_grey)
+    ax.tick_params(axis="both", colors=primary_grey)
+    ax.spines["right"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    ax.set_xticks(np.arange(1, max(profit_dict.keys()) + 1, 1))
+    ax.grid()
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    # Embed the result in the html output.
+    graph = base64.b64encode(buf.getbuffer()).decode("ascii")
+    return render_template(
+        "cryptocurrency/chart.html", graph=graph, current_page="graphique"
+    )

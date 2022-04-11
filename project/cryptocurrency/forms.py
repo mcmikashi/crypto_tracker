@@ -9,7 +9,7 @@ from wtforms import (
 
 class PurchaseForm(Form):
     cryptocurrency = SelectField(
-        "Crypto monaie",
+        "Crypto monnaie",
         coerce=int,
     )
     price = DecimalField(
@@ -23,7 +23,7 @@ class PurchaseForm(Form):
 
 class QuickPurchaseForm(Form):
     cryptocurrency = SelectField(
-        "Crypto monaie",
+        "Crypto monnaie",
         coerce=int,
     )
     quantity = DecimalField(

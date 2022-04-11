@@ -1,7 +1,7 @@
 """
 The cryptocurrency Blueprint handles the cryptocurrency data management.
-The user can see is current valorization, add a purchase, add quickly  
-a purchase (with the last quote currency of the cryptocurrency), manage 
+The user can see is current valorization, add a purchase, add quickly
+a purchase (with the last quote currency of the cryptocurrency), manage
 the purchase.
 """
 from flask import Blueprint

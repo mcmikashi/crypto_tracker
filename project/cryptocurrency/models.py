@@ -1,5 +1,4 @@
 from project import db
-from project.authentification.models import User
 from datetime import datetime
 
 
@@ -31,9 +30,8 @@ class Purchase(db.Model):
     )
 
     def __repr__(self):
-        return (
-            f"<Purchase : <C:{self.cryptocurrency_id.symbol}> <D:{self.date}> >"
-        )
+        return (f"<Purchase : <C:{self.cryptocurrency_id.symbol}> "
+                f"<D:{self.date}> >")
 
 
 class QuoteCurrency(db.Model):
@@ -49,7 +47,8 @@ class QuoteCurrency(db.Model):
     )
 
     def __repr__(self):
-        return f"<QuoteCurrency : <C:{self.cryptocurrency_id.name}> <D:{self.date}> >"
+        return (f"<QuoteCurrency : <C:{self.cryptocurrency_id.name}> "
+                f"<D:{self.date}> >")
 
 
 class Profit(db.Model):
@@ -61,4 +60,5 @@ class Profit(db.Model):
     user = db.relationship("User", backref=db.backref("profits", lazy=True))
 
     def __repr__(self):
-        return f"<Profit : <U:{self.user_id.first_name} {self.user_id.last_name}> <D:{self.date}> >"
+        return (f"<Profit : <U:{self.user_id.first_name} "
+                f"{self.user_id.last_name}> <D:{self.date}> >")

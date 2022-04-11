@@ -103,9 +103,8 @@ class TestAuthentification(TestCase, unittest.TestCase):
             follow_redirects=True,
             data={"email": "bobdupont@test.com", "password": "bobdu1234"},
         )
-        self.assertEqual(response.request.path,
-                         url_for("cryptocurrency.home"))
-        
+        self.assertEqual(response.request.path, url_for("cryptocurrency.home"))
+
     def test_login_post_bad_password(self):
         response = self.client.post(
             url_for("authentification.login"),
@@ -128,12 +127,12 @@ class TestAuthentification(TestCase, unittest.TestCase):
         self.assertEqual(response_1.status_code, 302)
         self.assert_message_flashed("A bientot", "success")
 
-class TestCryptocurrency(TestCase, unittest.TestCase):
 
+class TestCryptocurrency(TestCase, unittest.TestCase):
     def create_app(self):
         app = create_app("config.TestConfig")
         return app
-    
+
     def setUp(self):
         db.create_all()
         self.new_user = User(
@@ -151,8 +150,10 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
         )
         db.session.add(self.new_user_1)
         self.new_cryptocurrency = Cryptocurrency(
-            name="Bitcon", symbol="BTC", coinmarketcap_id=1,
-            coinmarketcap_icon="https://example.com/icon/1"
+            name="Bitcon",
+            symbol="BTC",
+            coinmarketcap_id=1,
+            coinmarketcap_icon="https://example.com/icon/1",
         )
         db.session.add(self.new_cryptocurrency)
         db.session.commit()
@@ -166,6 +167,7 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
             url_for("authentification.login"),
             data=dict(email="bobdupont@test.com", password="bobdu1234"),
         )
+
     def set_purchse_and_quote(self):
         self.new_quote_currency = QuoteCurrency(
             cryptocurrency_id=self.new_cryptocurrency.id, price=110
@@ -215,7 +217,7 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
         self.auth_user()
         response_1 = self.client.get(url)
         self.assert200(response_1)
-    
+
     def test_post_on_add(self):
         self.auth_user()
         response = self.client.post(
@@ -240,7 +242,7 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
         self.auth_user()
         response_1 = self.client.get(url)
         self.assert200(response_1)
-    
+
     def test_post_on_quick_add(self):
         self.auth_user()
         self.set_purchse_and_quote()
@@ -265,7 +267,6 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
         self.auth_user()
         response_1 = self.client.get(url)
         self.assert200(response_1)
-        
 
     def test_graphique_status_code(self):
         url = url_for("cryptocurrency.chart")
@@ -292,11 +293,11 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
         self.assert200(response_1)
         # default user tries to access another user's purchase
         url_1 = url_for("cryptocurrency.edit", pk=self.new_purchase_1.id)
-        response_2 = self.client.get(url_1,follow_redirects=True)
-        self.assertEqual(response_2.request.path, 
-                         url_for("cryptocurrency.manage"))
+        response_2 = self.client.get(url_1, follow_redirects=True)
+        self.assertEqual(
+            response_2.request.path, url_for("cryptocurrency.manage")
+        )
 
-    
     def test_post_on_edit(self):
         self.auth_user()
         self.set_purchse_and_quote()
@@ -325,19 +326,22 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
         self.assert200(response_1)
         # default user tries to access another user's purchase
         url_1 = url_for("cryptocurrency.delete", pk=self.new_purchase_1.id)
-        response_2 = self.client.get(url_1,follow_redirects=True)
-        self.assertEqual(response_2.request.path, 
-                         url_for("cryptocurrency.manage"))
-    
+        response_2 = self.client.get(url_1, follow_redirects=True)
+        self.assertEqual(
+            response_2.request.path, url_for("cryptocurrency.manage")
+        )
+
     def test_post_on_delete(self):
         self.auth_user()
         self.set_purchse_and_quote()
         response = self.client.post(
             url_for("cryptocurrency.delete", pk=self.new_purchase.id),
-            follow_redirects=True)
+            follow_redirects=True,
+        )
         self.assert_message_flashed(
             "Votre achats a bien été suprimmé.",
             "success",
         )
-        self.assertEqual(response.request.path, 
-                         url_for("cryptocurrency.manage"))
+        self.assertEqual(
+            response.request.path, url_for("cryptocurrency.manage")
+        )

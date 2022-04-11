@@ -143,6 +143,13 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
             password=generate_password_hash("bobdu1234"),
         )
         db.session.add(self.new_user)
+        self.new_user_1 = User(
+            first_name="Robert",
+            last_name="Dupont",
+            email="robertdupont@test.com",
+            password=generate_password_hash("robertdup1234"),
+        )
+        db.session.add(self.new_user_1)
         self.new_cryptocurrency = Cryptocurrency(
             name="Bitcon", symbol="BTC", coinmarketcap_id=1,
             coinmarketcap_icon="https://example.com/icon/1"
@@ -172,6 +179,14 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
             date=datetime.now(timezone.utc),
         )
         db.session.add(self.new_purchase)
+        self.new_purchase_1 = Purchase(
+            user_id=self.new_user_1.id,
+            cryptocurrency_id=self.new_cryptocurrency.id,
+            price=200,
+            quantity=1,
+            date=datetime.now(timezone.utc),
+        )
+        db.session.add(self.new_purchase_1)
         db.session.commit()
 
     def set_profit(self):
@@ -268,19 +283,25 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
 
     def test_edit_status_code(self):
         self.set_purchse_and_quote()
-        url = url_for("cryptocurrency.edit", pk=1)
+        url = url_for("cryptocurrency.edit", pk=self.new_purchase.id)
         response_0 = self.client.get(url)
         self.assertEqual(response_0.status_code, 302)
         # testing with a logged user
         self.auth_user()
         response_1 = self.client.get(url)
         self.assert200(response_1)
+        # default user tries to access another user's purchase
+        url_1 = url_for("cryptocurrency.edit", pk=self.new_purchase_1.id)
+        response_2 = self.client.get(url_1,follow_redirects=True)
+        self.assertEqual(response_2.request.path, 
+                         url_for("cryptocurrency.manage"))
+
     
     def test_post_on_edit(self):
         self.auth_user()
         self.set_purchse_and_quote()
         response = self.client.post(
-            url_for("cryptocurrency.edit", pk=1),
+            url_for("cryptocurrency.edit", pk=self.new_purchase.id),
             data={
                 "cryptocurrency": 1,
                 "price": 200,
@@ -295,19 +316,24 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
 
     def test_delete_status_code(self):
         self.set_purchse_and_quote()
-        url = url_for("cryptocurrency.delete", pk=1)
+        url = url_for("cryptocurrency.delete", pk=self.new_purchase.id)
         response_0 = self.client.get(url)
         self.assertEqual(response_0.status_code, 302)
         # testing with a logged user
         self.auth_user()
         response_1 = self.client.get(url)
         self.assert200(response_1)
+        # default user tries to access another user's purchase
+        url_1 = url_for("cryptocurrency.delete", pk=self.new_purchase_1.id)
+        response_2 = self.client.get(url_1,follow_redirects=True)
+        self.assertEqual(response_2.request.path, 
+                         url_for("cryptocurrency.manage"))
     
     def test_post_on_delete(self):
         self.auth_user()
         self.set_purchse_and_quote()
         response = self.client.post(
-            url_for("cryptocurrency.delete", pk=1),
+            url_for("cryptocurrency.delete", pk=self.new_purchase.id),
             follow_redirects=True)
         self.assert_message_flashed(
             "Votre achats a bien été suprimmé.",

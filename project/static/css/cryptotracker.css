@@ -18,3 +18,10 @@
 .crypto-icon{
     width: 1.5em;
 }
+
+.table.table-dark{
+    border: 2px solid white;
+}
+.table>:not(caption)>*>*{
+    background-color: rgb(16,15,15);
+}

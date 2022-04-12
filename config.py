@@ -9,7 +9,7 @@ load_dotenv(path.join(basedir, ".env"))
 class Config:
     """Base config."""
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SCHEDULER_TIMEZONE = "Europe/Paris"
+    SCHEDULER_TIMEZONE = "UTC"
 
 
 class DevConfig(Config):

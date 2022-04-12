@@ -33,4 +33,4 @@ class TestConfig(Config):
 class Prodconfig(Config):
     FLASK_ENV = "production"
     SECRET_KEY = environ.get("SECRET_KEY")
-    SQLALCHEMY_DATABASE_URI = environ.get("PROD_DATABASE_URI")
+    SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")

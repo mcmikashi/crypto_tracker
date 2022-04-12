@@ -31,6 +31,7 @@ def get_user_current_total_valorization(user_id: int, only_total=False):
         only_total == False : a tuple that containt a list of dic and an int
         only_total == True : return an int
     """
+    # Get the last quote of a cryptocurrency
     get_lastest_quote = (
         select(QuoteCurrency.price)
         .filter(QuoteCurrency.cryptocurrency_id == Cryptocurrency.id)
@@ -38,6 +39,24 @@ def get_user_current_total_valorization(user_id: int, only_total=False):
         .limit(1)
         .scalar_subquery()
     )
+    # Get the current total of each cryptocurrency valorization for an user
+    cryptocurrencys_total = Purchase.query.join(Cryptocurrency).with_entities(
+        (get_lastest_quote * func.sum(Purchase.quantity) -
+         func.sum(Purchase.price)
+         ).label("valorization")
+    ).filter(Purchase.user_id == user_id).group_by(
+        Cryptocurrency.id).subquery()
+    # Get the current sum of the valorizations
+    total_valorization = db.session.query(func.sum(
+        cryptocurrencys_total.c.valorization)).select_entity_from(
+            cryptocurrencys_total).scalar()
+    # if the total is none the total is set to 0
+    if total_valorization is None:
+        total_valorization = 0
+    if only_total:
+        return total_valorization
+    # Get for each purchase data of cryptocurrency(name,symbol,icon) and
+    # the valorization of each purchase
     cryptocurrencys = (
         Purchase.query.join(Cryptocurrency)
         .with_entities(
@@ -51,9 +70,6 @@ def get_user_current_total_valorization(user_id: int, only_total=False):
         .filter(Purchase.user_id == user_id)
         .order_by("name")
     )
-    total_valorization = sum([item.valorization for item in cryptocurrencys])
-    if only_total:
-        return total_valorization
     return (
         cryptocurrencys,
         total_valorization,
@@ -72,6 +88,7 @@ def get_user_total_valorization_of_the_day(user_id: int) -> tuple:
     yesterday = date.today() - timedelta(days=1)
     yesterday_start = datetime.combine(yesterday, datetime.min.time())
     yesterday_end = yesterday_start.replace(hour=23, minute=59, second=59)
+    # Get the last quote of the day
     get_lastest_quote_of_the_day = (
         select(QuoteCurrency.price)
         .filter(
@@ -82,22 +99,24 @@ def get_user_total_valorization_of_the_day(user_id: int) -> tuple:
         .limit(1)
         .scalar_subquery()
     )
-    cryptocurrencys = (
+    cryptocurrencys_total_day = (
         Purchase.query.join(Cryptocurrency)
         .with_entities(
-            Cryptocurrency.id.label("id"),
-            Cryptocurrency.name.label("name"),
-            Cryptocurrency.symbol.label("symbol"),
             (
-                get_lastest_quote_of_the_day * func.sum(Purchase.quantity)
-                - func.sum(Purchase.price)
+                get_lastest_quote_of_the_day * func.sum(Purchase.quantity) -
+                func.sum(Purchase.price)
             ).label("valorization"),
         )
         .filter(Purchase.user_id == user_id, Purchase.date <= yesterday_end)
-        .group_by(Cryptocurrency.id)
-        .order_by("name")
+        .group_by(Cryptocurrency.id).subquery()
     )
-    total_valorization = sum([item.valorization for item in cryptocurrencys])
+    # Get the last sum of the valorizations
+    total_valorization = db.session.query(func.sum(
+        cryptocurrencys_total_day.c.valorization)).select_entity_from(
+            cryptocurrencys_total_day).scalar()
+    # if the total is none the total is set to 0
+    if total_valorization is None:
+        total_valorization = 0
     return (total_valorization, yesterday_end)
 
 

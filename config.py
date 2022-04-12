@@ -30,7 +30,11 @@ class TestConfig(Config):
     # Disable CSRF tokens in the Forms (only valid for testing purposes!)
     WTF_CSRF_ENABLED = False
 
+
 class Prodconfig(Config):
     FLASK_ENV = "production"
     SECRET_KEY = environ.get("SECRET_KEY")
-    SQLALCHEMY_DATABASE_URI = environ.get("PROD_DATABASE_URI")
+    uri = environ.get("DATABASE_URL")
+    if uri.startswith("postgres://"):
+        uri = uri.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = uri

@@ -9,7 +9,7 @@ from sqlalchemy.sql import desc
 import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
-import numpy as np
+from datetime import date
 
 
 @crypto.route("/")
@@ -160,18 +160,16 @@ def delete(pk):
 @crypto.route("/chart")
 @login_required
 def chart():
-    profit_dict = {0: 0}
-    for index, item in enumerate(
-        Profit.query.filter(Profit.user_id == current_user.id).order_by(
-            Profit.date
-        )
-    ):
-        num = index + 1
-        profit_dict.update({num: item.profit_and_loss})
-    if profit_dict == {0: 0}:
-        new_key = 1
-    else:
-        new_key = max(profit_dict.keys()) + 1
+    profit_dict = dict()
+    profit_list = Profit.query.filter(
+        Profit.user_id == current_user.id).order_by(Profit.date)
+    for item in profit_list:
+        # Get the datetime and turn it into string date
+        the_date = item.date.date().strftime("%d/%m/%Y")
+        profit_dict.update({the_date: item.profit_and_loss})
+
+    # Create a new key with today is date
+    new_key = date.today().strftime("%d/%m/%Y")
     profit_dict[new_key] = get_user_current_total_valorization(
         current_user.id, True
     )
@@ -183,18 +181,24 @@ def chart():
     fig, ax = plt.subplots(facecolor=primary_black)
     ax.plot(profit_dict.keys(), profit_dict.values(), color=primary_green)
     ax.set(
-        xlabel="Jour(s)", ylabel="Gain ou Perte (€)", facecolor=primary_black
+        xlabel="Date", ylabel="Gain ou Perte (€)", facecolor=primary_black
     )
+    # Change color of the spines
     ax.spines["bottom"].set_color(primary_grey)
     ax.spines["left"].set_color(primary_grey)
+    # Change color of the label
     ax.yaxis.label.set_color(primary_grey)
     ax.xaxis.label.set_color(primary_grey)
+    # Rotates and right-aligns the x labels so they don't crowd each other.
+    for label in ax.get_xticklabels(which='major'):
+        label.set(rotation=25, horizontalalignment='right')
     ax.tick_params(axis="both", colors=primary_grey)
+    # Remove top and rigth spines
     ax.spines["right"].set_visible(False)
     ax.spines["top"].set_visible(False)
-    ax.set_xticks(np.arange(1, max(profit_dict.keys()) + 1, 1))
-    ax.grid()
     buf = BytesIO()
+    # Change the size of the image
+    fig.set_size_inches((8, 8))
     fig.savefig(buf, format="png")
     # Embed the result in the html output.
     graph = base64.b64encode(buf.getbuffer()).decode("ascii")

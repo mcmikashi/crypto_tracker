@@ -8,6 +8,9 @@ db = SQLAlchemy()
 # init the LoginManager instance
 login_manager = LoginManager()
 login_manager.login_view = "authentification.login"
+# Set the message if user tries to go on a page that require to be logged
+login_manager.login_message = "Vous devez être connecté pour voir cette page"
+login_manager.login_message_category = "warning"
 # init APScheduler instance
 scheduler = APScheduler()
 

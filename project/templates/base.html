@@ -46,7 +46,9 @@
   var alertNode = document.querySelector('.alert')
   var bsAlert = new bootstrap.Alert(alertNode)
   setTimeout(function () {
-    bsAlert.close();
+    if (alertNode) {
+      bsAlert.close();
+    }
   }, 5000);
 </script>
 </body>

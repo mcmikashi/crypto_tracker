@@ -2,20 +2,18 @@
 <div class="row my-4">
     <div class="col-sm-12">
         <form method=post>
-            <dl>
-                {% for field in form %}
-                    {% if field.type != "BooleanField" %}
-                        <div class="my-4">
-                            {{ render_field(field,class_="form-control bg-black text-white") }}
-                        </div>
-                    {% else %}
-                        <div class="form-check form-switch mb-3">
-                            {{ render_field(field,class_="form-check-input bg-success") }}
-                            {{ field.label }}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </dl>
+            {% for field in form %}
+                {% if field.type != "BooleanField" %}
+                    <div class="my-4">
+                        {{ render_field(field,class_="form-control bg-black text-white") }}
+                    </div>
+                {% else %}
+                    <div class="form-check form-switch mb-3">
+                        {{ render_field(field,class_="form-check-input bg-success") }}
+                        {{ field.label }}
+                    </div>
+                {% endif %}
+            {% endfor %}
             <div class="d-grid col-8 mx-auto gap-2">
                 <input type="submit" 
                     name="submit_form"

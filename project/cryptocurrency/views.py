@@ -9,7 +9,7 @@ from sqlalchemy.sql import desc
 import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
-from datetime import date
+from datetime import date, timedelta
 
 
 @crypto.route("/")
@@ -168,6 +168,12 @@ def chart():
         the_date = item.date.date().strftime("%d/%m/%Y")
         profit_dict.update({the_date: item.profit_and_loss})
 
+    # If the user doesn't have profit histori
+    # we show him yesterday date with 0 profit
+    if profit_dict == dict():
+        yesterday = date.today() - timedelta(days=1)
+        new_key = yesterday.strftime("%d/%m/%Y")
+        profit_dict[new_key] = 0
     # Create a new key with today is date
     new_key = date.today().strftime("%d/%m/%Y")
     profit_dict[new_key] = get_user_current_total_valorization(

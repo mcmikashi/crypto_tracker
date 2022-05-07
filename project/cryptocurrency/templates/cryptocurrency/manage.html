@@ -13,8 +13,8 @@
                 <tr>
                     <td class="small">{{purchase.cryptocurrency.name}} le {{purchase.date.strftime('%d/%m/%Y à %H:%M')}}</td>
                     <td>
-                        <a  href="{{url_for('cryptocurrency.edit', pk=purchase.id)}}" class="btn btn-outline-warning mx-1"><i class="fa-regular fa-pen-to-square"></i> </a>
-                        <a href="{{url_for('cryptocurrency.delete', pk=purchase.id)}}" class="btn btn-outline-danger mx-1"><i class="fa-regular fa-trash-can"></i></a>
+                        <a  href="{{url_for('cryptocurrency.edit', pk=purchase.id)}}" class="btn btn-outline-warning mx-1"><i class="fa-solid fa-pen-to-square"></i> </a>
+                        <a href="{{url_for('cryptocurrency.delete', pk=purchase.id)}}" class="btn btn-outline-danger mx-1"><i class="fa-solid fa-trash-can"></i></a>
                     </td>
                 </tr>
             {% else %}

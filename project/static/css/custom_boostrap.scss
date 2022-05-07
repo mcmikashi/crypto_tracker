@@ -1,5 +1,35 @@
+// scss-docs-start import-stack
+// Configuration
+@import "../scss_boostrap/functions";
+
+// Custom colors
 $success:       #1fc36c;
 $light:         #EFEFEF;
 $dark:          #100F0F;
 
-@import "../scss/bootstrap.scss";
+@import "../scss_boostrap/variables";
+@import "../scss_boostrap/mixins";
+@import "../scss_boostrap/utilities";
+
+// Layout & components
+@import "../scss_boostrap/root";
+@import "../scss_boostrap/reboot";
+@import "../scss_boostrap/type";
+@import "../scss_boostrap/images";
+@import "../scss_boostrap/containers";
+@import "../scss_boostrap/grid";
+@import "../scss_boostrap/tables";
+@import "../scss_boostrap/forms";
+@import "../scss_boostrap/buttons";
+@import "../scss_boostrap/transitions";
+@import "../scss_boostrap/button-group";
+@import "../scss_boostrap/nav";
+@import "../scss_boostrap/alert";
+@import "../scss_boostrap/list-group";
+@import "../scss_boostrap/close";
+@import "../scss_boostrap/placeholders";
+
+// Utilities
+@import "../scss_boostrap/utilities/api";
+// scss-docs-end import-stack
+

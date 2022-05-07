@@ -35,7 +35,7 @@ def signup():
         first_name = form.first_name.data
         last_name = form.last_name.data
         email = form.email.data
-        password = form.password.data
+        password = form.password_new.data
         user = User.query.filter_by(email=email).first()
         # if a user is found, we want to redirect back
         # to the login page so user can login.

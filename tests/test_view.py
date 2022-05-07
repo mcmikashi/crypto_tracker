@@ -56,8 +56,8 @@ class TestAuthentification(TestCase, unittest.TestCase):
                 "first_name": "bernard",
                 "last_name": "dupont",
                 "email": "bernarddupont@test.com",
-                "password": "new-password",
-                "confirm": "new-password",
+                "password_new": "New+pass15",
+                "confirm": "New+pass15",
             },
         )
         self.assert_message_flashed(
@@ -76,8 +76,8 @@ class TestAuthentification(TestCase, unittest.TestCase):
                 "first_name": "bob",
                 "last_name": "dupont",
                 "email": "bobdupont@test.com",
-                "password": "new-password",
-                "confirm": "new-password",
+                "password_new": "New+pass15",
+                "confirm": "New+pass15",
             },
         )
         self.assert_message_flashed(

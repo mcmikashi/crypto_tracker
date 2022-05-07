@@ -5,6 +5,13 @@
             {% for field in form %}
                 {% if field.type != "BooleanField" %}
                     <div class="my-4">
+                        {% if field.name == "password_new" %}
+                        <p class="text-center">
+                            <small class="text-white">
+                                Pour le mot de passe utilisez au moins huit caractères avec des lettres (minuscule et masjucule), des chiffres et des symboles (@$!%*#?&+-;)
+                            </small>
+                        </p>
+                        {% endif %}
                         {{ render_field(field,class_="form-control bg-black text-white") }}
                     </div>
                 {% else %}

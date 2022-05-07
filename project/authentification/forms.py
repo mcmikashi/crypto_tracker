@@ -12,13 +12,27 @@ class SignupForm(Form):
 
     first_name = StringField(
         "Prenom",
-        [validators.DataRequired(), validators.Length(2, 75)],
+        [
+            validators.DataRequired(),
+            validators.Length(2, 75),
+            validators.Regexp(
+                "^[a-zA-Z-]+$",
+                message="Ce prénom contient des caractères non autorisés.",
+            ),
+        ],
         description="fa-solid fa-user",
         render_kw={"placeholder": "Prenom"},
     )
     last_name = StringField(
         "Nom",
-        [validators.DataRequired(), validators.Length(2, 75)],
+        [
+            validators.DataRequired(),
+            validators.Length(2, 75),
+            validators.Regexp(
+                "^[a-zA-Z-]+$",
+                message="Ce nom contient des caractères non autorisés.",
+            ),
+        ],
         description="fa-solid fa-user",
         render_kw={"placeholder": "Nom"},
     )
@@ -28,14 +42,21 @@ class SignupForm(Form):
         description="fa-solid fa-at",
         render_kw={"placeholder": "E-mail"},
     )
-    password = PasswordField(
+    password_new = PasswordField(
         "Mot de passe",
         [
             validators.DataRequired(),
             validators.EqualTo(
-                "confirm", message="les mots de passe doivent correspondre"
+                "confirm", message="Les mots de passe doivent correspondre."
             ),
-            validators.Length(6, 150),
+            validators.Regexp(
+                "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-;])"
+                "[A-Za-z\d@$!%*#?&+-;]{8,24}$",
+                message="Le mot de passe doit avoir une longueur comprise "
+                "entre 8 et 24 caractères et doit contenir une"
+                "majuscule une minuscule et l'un des symboles suivants"
+                ": @$!%*#?&+-;",
+            ),
         ],
         description="fa-solid fa-lock",
         render_kw={"placeholder": "Mot de passe"},

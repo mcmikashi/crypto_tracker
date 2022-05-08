@@ -11,6 +11,12 @@ from project.cryptocurrency.models import (
     QuoteCurrency,
 )
 from datetime import datetime, date, timezone, timedelta
+from itsdangerous.url_safe import URLSafeTimedSerializer
+from os import environ, path
+from dotenv import load_dotenv
+
+basedir = path.abspath(path.dirname(__file__))
+load_dotenv(path.join(basedir, ".env"))
 
 
 class TestAuthentification(TestCase, unittest.TestCase):
@@ -345,3 +351,86 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
         self.assertEqual(
             response.request.path, url_for("cryptocurrency.manage")
         )
+
+    def test_forgot_password(self):
+        url = url_for("authentification.forgot")
+        response_0 = self.client.get(url)
+        self.assert200(response_0)
+
+    def test_forgot_password_post_bad_email(self):
+        response = self.client.post(
+            url_for("authentification.forgot"),
+            data={
+                "email": "jeandupontpasinscrit@test.com",
+            },
+        )
+        self.assert_message_flashed(
+            "Cette adresse e-mail n'est reliée à aucun compte.", "warning"
+        )
+        self.assert200(response)
+
+    def test_forgot_password_post_good_email(self):
+        response = self.client.post(
+            url_for("authentification.forgot"),
+            data={
+                "email": self.new_user.email,
+            },
+        )
+        self.assert_message_flashed(
+            "Vous allez recevoir un mail pour réinitialiser votre "
+            "mot de passe.(vérifier aussi dans la catégorie spam)",
+            "success"
+        )
+        self.assert200(response)
+
+    def test_reset_password_bad_token(self):
+        response = self.client.post(
+            url_for("authentification.reset", token="bad-token"),
+            follow_redirects=True,
+        )
+        self.assert_message_flashed(
+            "Le lien est invalide ou a expiré.", "danger"
+        )
+        self.assertEqual(
+            response.request.path, url_for("authentification.login")
+        )
+
+    def test_reset_password_good_token(self):
+        password_reset_serializer = URLSafeTimedSerializer(
+            environ.get("SECRET_KEY")
+        )
+        response = self.client.get(
+            url_for(
+                "authentification.reset",
+                token=password_reset_serializer.dumps(
+                    self.new_user.email, salt=environ.get("PASSWORD_SALT")
+                ),
+            )
+        )
+        self.assert200(response)
+
+    def test_reset_password_good_token_post(self):
+        previous_password = self.new_user.password
+        password_reset_serializer = URLSafeTimedSerializer(
+            environ.get("SECRET_KEY")
+        )
+        response = self.client.post(
+            url_for(
+                "authentification.reset",
+                token=password_reset_serializer.dumps(
+                    self.new_user.email, salt=environ.get("PASSWORD_SALT")
+                ),
+            ),
+            follow_redirects=True,
+            data={
+                "password_new": "the+pass987A",
+                "confirm": "the+pass987A",
+            },
+        )
+        self.assert_message_flashed(
+            "Votre mot de passe a été mise à jour.", "success"
+        )
+        self.assertEqual(
+            response.request.path, url_for("authentification.login")
+        )
+        self.assertNotEqual(self.new_user.email, previous_password)

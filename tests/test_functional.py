@@ -88,8 +88,9 @@ class TestStatusCode(LiveServerTestCase, unittest.TestCase):
         self.browser.find_element(By.NAME, "email").send_keys(
             "bobdupont@test.fr"
         )
-        self.browser.find_element(
-            By.NAME, "password_new").send_keys("Dubo1234+nbt")
+        self.browser.find_element(By.NAME, "password_new").send_keys(
+            "Dubo1234+nbt"
+        )
         self.browser.find_element(By.NAME, "confirm").send_keys("Dubo1234+nbt")
         self.browser.find_element(By.NAME, "submit_form").click()
         # redirect to the login page
@@ -99,8 +100,9 @@ class TestStatusCode(LiveServerTestCase, unittest.TestCase):
         self.browser.find_element(By.NAME, "email").send_keys(
             "bobdupont@test.fr"
         )
-        self.browser.find_element(
-            By.NAME, "password").send_keys("Dubo1234+nbt")
+        self.browser.find_element(By.NAME, "password").send_keys(
+            "Dubo1234+nbt"
+        )
         self.browser.find_element(By.NAME, "submit_form").click()
         # we are logged and get redirect to the index
         self.assertEqual(self.browser.current_url, f"{self.get_server_url()}/")

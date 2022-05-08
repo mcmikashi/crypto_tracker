@@ -60,8 +60,9 @@ class TestUtilsFunction(TestCase, unittest.TestCase):
 
     def set_purchse_and_quote(self):
         self.new_quote_currency = QuoteCurrency(
-            cryptocurrency_id=self.new_cryptocurrency.id, price=110,
-            date=date.today()
+            cryptocurrency_id=self.new_cryptocurrency.id,
+            price=110,
+            date=date.today(),
         )
         db.session.add(self.new_quote_currency)
         self.new_purchase = Purchase(

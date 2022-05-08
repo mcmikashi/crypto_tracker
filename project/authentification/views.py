@@ -130,7 +130,7 @@ def reset(token):
         email = password_reset_serializer.loads(
             token, salt=environ.get("PASSWORD_SALT"), max_age=900
         )
-    except:
+    except Exception as e:
         flash("Le lien est invalide ou a expiré.", "danger")
         return redirect(url_for("authentification.login"))
     form = ResetPasswordFrorm(request.form)

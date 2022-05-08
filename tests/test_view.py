@@ -379,7 +379,7 @@ class TestCryptocurrency(TestCase, unittest.TestCase):
         self.assert_message_flashed(
             "Vous allez recevoir un mail pour réinitialiser votre "
             "mot de passe.(vérifier aussi dans la catégorie spam)",
-            "success"
+            "success",
         )
         self.assert200(response)
 

@@ -17,6 +17,7 @@ scheduler = APScheduler()
 # init mailing
 mail = Mail()
 
+
 def create_app(config_object=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_object)
@@ -33,8 +34,10 @@ def initialize_extensions(app):
     db.init_app(app)
     # initialize APScheduler with the app
     scheduler.init_app(app)
-    from project.cryptocurrency.utils import \
-        update_quote, daily_update_user_last_valorization
+    from project.cryptocurrency.utils import (
+        update_quote,
+        daily_update_user_last_valorization,
+    )
 
     # Every 5 minutes get the last quote currency of
     # all cryptorency that is on the database

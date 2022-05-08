@@ -162,7 +162,8 @@ def delete(pk):
 def chart():
     profit_dict = dict()
     profit_list = Profit.query.filter(
-        Profit.user_id == current_user.id).order_by(Profit.date)
+        Profit.user_id == current_user.id
+    ).order_by(Profit.date)
     for item in profit_list:
         # Get the datetime and turn it into string date
         the_date = item.date.date().strftime("%d/%m/%Y")
@@ -186,9 +187,7 @@ def chart():
     # Data for plotting
     fig, ax = plt.subplots(facecolor=primary_black)
     ax.plot(profit_dict.keys(), profit_dict.values(), color=primary_green)
-    ax.set(
-        xlabel="Date", ylabel="Gain ou Perte (€)", facecolor=primary_black
-    )
+    ax.set(xlabel="Date", ylabel="Gain ou Perte (€)", facecolor=primary_black)
     # Change color of the spines
     ax.spines["bottom"].set_color(primary_grey)
     ax.spines["left"].set_color(primary_grey)
@@ -196,8 +195,8 @@ def chart():
     ax.yaxis.label.set_color(primary_grey)
     ax.xaxis.label.set_color(primary_grey)
     # Rotates and right-aligns the x labels so they don't crowd each other.
-    for label in ax.get_xticklabels(which='major'):
-        label.set(rotation=25, horizontalalignment='right')
+    for label in ax.get_xticklabels(which="major"):
+        label.set(rotation=25, horizontalalignment="right")
     ax.tick_params(axis="both", colors=primary_grey)
     # Remove top and rigth spines
     ax.spines["right"].set_visible(False)

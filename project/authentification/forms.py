@@ -16,7 +16,7 @@ class SignupForm(Form):
             validators.DataRequired(),
             validators.Length(2, 75),
             validators.Regexp(
-                "^[a-zA-Z-]+$",
+                r"^[a-zA-Z-]+$",
                 message="Ce prénom contient des caractères non autorisés.",
             ),
         ],
@@ -29,7 +29,7 @@ class SignupForm(Form):
             validators.DataRequired(),
             validators.Length(2, 75),
             validators.Regexp(
-                "^[a-zA-Z-]+$",
+                r"^[a-zA-Z-]+$",
                 message="Ce nom contient des caractères non autorisés.",
             ),
         ],
@@ -50,8 +50,8 @@ class SignupForm(Form):
                 "confirm", message="Les mots de passe doivent correspondre."
             ),
             validators.Regexp(
-                "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-;])"
-                "[A-Za-z\d@$!%*#?&+-;]{8,24}$",
+                r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-;])"
+                r"[A-Za-z\d@$!%*#?&+-;]{8,24}$",
                 message="Le mot de passe doit avoir une longueur comprise "
                 "entre 8 et 24 caractères et doit contenir une"
                 "majuscule une minuscule et l'un des symboles suivants"
@@ -102,8 +102,8 @@ class ResetPasswordFrorm(Form):
                 "confirm", message="Les mots de passe doivent correspondre."
             ),
             validators.Regexp(
-                "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-;])"
-                "[A-Za-z\d@$!%*#?&+-;]{8,24}$",
+                r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-;])"
+                r"[A-Za-z\d@$!%*#?&+-;]{8,24}$",
                 message="Le mot de passe doit avoir une longueur comprise "
                 "entre 8 et 24 caractères et doit contenir une"
                 "majuscule une minuscule et l'un des symboles suivants"

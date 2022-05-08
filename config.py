@@ -1,5 +1,5 @@
 """Flask configuration."""
-from os import environ, path, urandom
+from os import environ, path
 from dotenv import load_dotenv
 
 basedir = path.abspath(path.dirname(__file__))
@@ -8,10 +8,11 @@ load_dotenv(path.join(basedir, ".env"))
 
 class Config:
     """Base config."""
+
     SECRET_KEY = environ.get("SECRET_KEY")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SCHEDULER_TIMEZONE = "UTC"
-    MAIL_SERVER = 'smtp.office365.com'
+    MAIL_SERVER = "smtp.office365.com"
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USERNAME = environ.get("EMAIL")

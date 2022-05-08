@@ -51,7 +51,9 @@ jobs:
       run: |
         cp .env_exemple .env
         sed -i 's/db_test_uri/postgresql+psycopg2:\/\/${{ secrets.USER_DB }}:${{ secrets.PASSWORD_DB }}@localhost:5432\/${{ secrets.TEST_DB }}/g' .env
-        sed -i 's/api_key/${{ secrets.API_KEY }}/g' .env 
+        sed -i 's/api_key/${{ secrets.API_KEY }}/g' .env
+        sed -i 's/secret_key/${{ secrets.SECRET_KEY }}/g' .env 
+        sed -i 's/password_salt/${{ secrets.PASSWORD_SALT }}/g' .env 
     - name: Test and coverage
       run: |
         coverage run -m unittest discover tests

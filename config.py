@@ -8,20 +8,27 @@ load_dotenv(path.join(basedir, ".env"))
 
 class Config:
     """Base config."""
+    SECRET_KEY = environ.get("SECRET_KEY")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SCHEDULER_TIMEZONE = "UTC"
+    MAIL_SERVER = 'smtp.office365.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = environ.get("EMAIL")
+    MAIL_PASSWORD = environ.get("EMAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = environ.get("EMAIL")
 
 
 class DevConfig(Config):
     FLASK_ENV = "development"
     DEBUG = True
+    MAIL_DEBUG = True
     SECRET_KEY = environ.get("SECRET_KEY")
     SQLALCHEMY_DATABASE_URI = environ.get("DEV_DATABASE_URI")
 
 
 class TestConfig(Config):
     FLASK_ENV = "development"
-    SECRET_KEY = urandom(16).hex()
     SQLALCHEMY_DATABASE_URI = environ.get("TEST_DATABASE_URI")
     TESTING = True
     DEBUG = True
@@ -33,7 +40,6 @@ class TestConfig(Config):
 
 class Prodconfig(Config):
     FLASK_ENV = "production"
-    SECRET_KEY = environ.get("SECRET_KEY")
     uri = environ.get("DATABASE_URL")
     if uri.startswith("postgres://"):
         uri = uri.replace("postgres://", "postgresql://", 1)

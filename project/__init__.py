@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_apscheduler import APScheduler
+from flask_mail import Mail
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
@@ -13,13 +14,15 @@ login_manager.login_message = "Vous devez être connecté pour voir cette page"
 login_manager.login_message_category = "warning"
 # init APScheduler instance
 scheduler = APScheduler()
-
+# init mailing
+mail = Mail()
 
 def create_app(config_object=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_object)
     initialize_extensions(app)
     register_blueprints(app)
+    mail.init_app(app)
     return app
 
 

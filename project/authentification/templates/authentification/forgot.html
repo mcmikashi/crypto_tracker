@@ -1,0 +1,15 @@
+{% from "part/_formhelpers.html" import render_field %}
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row my-4">
+    <div class="col-12 text-center">
+        <h4>Réinitialisation du mot de passe</h4>
+        <small>Veuillez entrer l'adresse email avec lequel vous vous etes inscrit.</small>
+    </div>
+    <div class="col-md-6 mx-auto">
+        {% include 'part/basic_form.html' %}
+    </div>
+</div>
+{% endblock content %}

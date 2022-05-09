@@ -1,5 +1,8 @@
 # crypto_tracker
 A small application that shows the valuation of your investments in cryptocurrency
+## Requirement 
+* [Python 3](https://www.python.org/downloads/)
+* An UNIX OS (optionaly for run test properly windows doesn't allow multiprocessing) or run test on the github action)
 ## Demo
 link : [crypto-tracker](https://crypto-tracker40.herokuapp.com/)
 
@@ -17,11 +20,11 @@ Clone the repository :
 Create a new virtual environment:
 ```
 cd crypto_tracker
-py -m venv env
+python3 -m venv env
 ```
 Activate the virtual environment:
 
-`env/Scripts/activate`
+`source env/bin/activate`
 
 Install the python packages specified in requirements.txt:
 
@@ -30,10 +33,15 @@ Install the python packages specified in requirements.txt:
 Set env file :
 For this step you will need to get an api key on [link](https://coinmarketcap.com/api/)
 and choose the type of database that you want to use [link](https://docs.sqlalchemy.org/en/14/core/engines.html)
+for smtp server the default value is server: smtp.office365.com and port  : 587 change this value on config.py file
 ```
 cp .env_exemple .env
+sed -i 's/secret_key/${{ your_seret_key }}/g' .env 
+sed -i 's/password_salt/${{ your_password_slat }}/g' .env 
 sed -i 's/db_prod_uri/{{your_db}}/g' .env
-sed -i 's/api_key/{{your_api_key}}/g' .env 
+sed -i 's/api_key/{{your_api_key}}/g' .env
+sed -i 's/email/{{your_email}}/g' .env
+sed -i 's/email_password/{{your_email_password}}/g' .env 
 ```
 Database Initialization:
 ```

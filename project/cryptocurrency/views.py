@@ -163,8 +163,8 @@ def chart():
     profit_dict = dict()
     profit_list = Profit.query.filter(
         Profit.user_id == current_user.id
-    ).order_by(Profit.date)
-    for item in profit_list:
+    ).order_by(desc(Profit.date)).limit(30)
+    for item in profit_list[::-1]:
         # Get the datetime and turn it into string date
         the_date = item.date.date().strftime("%d/%m/%Y")
         profit_dict.update({the_date: item.profit_and_loss})
@@ -196,7 +196,7 @@ def chart():
     ax.xaxis.label.set_color(primary_grey)
     # Rotates and right-aligns the x labels so they don't crowd each other.
     for label in ax.get_xticklabels(which="major"):
-        label.set(rotation=25, horizontalalignment="right")
+        label.set(rotation=30, horizontalalignment="right",size=8)
     ax.tick_params(axis="both", colors=primary_grey)
     # Remove top and rigth spines
     ax.spines["right"].set_visible(False)
@@ -209,4 +209,5 @@ def chart():
     graph = base64.b64encode(buf.getbuffer()).decode("ascii")
     return render_template(
         "cryptocurrency/chart.html", graph=graph, current_page="graphique"
+        
     )

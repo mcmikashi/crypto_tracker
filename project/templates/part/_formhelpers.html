@@ -6,7 +6,11 @@
 {% endif %}
 {% if field.description %}
   <div class="input-group">
-    <span class="input-group-text"><i class="{{field.description}}"></i></span>
+    {% if field.type == "SelectField" %}
+      <label class="input-group-text"><i class="{{field.description}}"></i></label>
+    {% else %}
+      <span class="input-group-text"><i class="{{field.description}}"></i></span>
+    {% endif %}
     {{ field(**kwargs)|safe }}
   </div>
 {% else %}
